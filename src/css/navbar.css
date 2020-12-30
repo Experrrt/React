@@ -1,0 +1,128 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins',sans-serif;
+}
+
+.navbar{
+    min-height: 75px;
+    max-height: 75px;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    
+    align-items: center;
+    background-color:#ffd460;
+    font-family: 'Poppins',sans-serif;
+   
+}
+
+.logo svg{
+    position: relative;
+    justify-self: start;
+    cursor: pointer;
+    margin-left: 3rem;
+
+}
+
+.nav-links{
+    
+    margin-left: 15rem;    
+    position: relative;    
+    display: flex;
+    gap:30px;
+    justify-content: space-between;
+    
+
+    }
+
+.nav-links li{
+    list-style: none;
+    transition: all .2s ease-in-out;
+    /* padding: 0.5rem 1rem; */
+    border-radius: 12px;
+    background: linear-gradient(45deg,#ea5455 50%, #ffd460 50%);
+    /* ak len text tak */
+    /* background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+    position: relative;
+}
+
+ .nav-links li,.nav-links li::after{
+    background-size: 300%;
+    background-position: 100%;
+    transition: .5s ease-out;
+
+}
+.nav-links .link{
+    height: 100%;
+    width: 100%;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    padding: 1rem 0.75rem;
+    font-size: 20px;
+    letter-spacing: 2px;
+    
+}
+
+.nav-links a{
+    text-decoration: none;
+}
+
+.nav-links li:hover, .nav-links li:hover:after {
+    background-position: 0;
+   
+}
+
+.burger{
+    display: none;
+}
+
+.burger div{
+    width: 25px;
+    height: 4px;
+    background-color: red;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+@media screen and (max-width:1100px){
+    .nav-links{
+        display: none;
+        transition:transform 0.5s ease-in;
+    }
+    .navbar{
+        display: flex;
+       
+        
+    }
+    .logo{
+        margin: 0 auto;
+    }
+    .logo svg{
+        margin-left: 35px;
+    }
+
+    .burger{
+        display: block;
+        right: 0;
+        cursor: pointer;
+    }
+
+}
+
+
+.open .line1{
+    transform: rotate(-45deg) translate(-6px,6px);
+}
+.open .line2{
+    opacity: 0;    
+}
+.open .line3{
+    transform: rotate(45deg) translate(-7px,-6px);
+}
+
+.close .line2{
+    opacity: 1;    
+}
