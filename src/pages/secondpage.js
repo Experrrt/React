@@ -34,7 +34,7 @@ class SecondPage extends React.Component{
     }
 
     sendReg(){
-        axios.post('http://localhost:5001/api/user/register',{
+        axios.post('https://backend-app-jk.herokuapp.com/api/user/register',{
             email:this.state.email,
             password:this.state.pass,
             name:'Nameee'
