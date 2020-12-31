@@ -1,6 +1,6 @@
 import React from 'react';
 import '../css/startpage.css'
-import {Link} from 'react-scroll'
+import {Link} from 'react-router-dom'
 
 class StartPage extends React.Component{
     
@@ -18,10 +18,12 @@ class StartPage extends React.Component{
        
         <div className='container'>
             <div className='content-large'>
+                <Link to='/login'>
                 <img src="./img/4k.jpg" alt='img'></img>
                 <div className='textblock'>
-                    <h3>{this.props.user.name ||"USER"}</h3>
+                    <h3>{this.props.user.name ||"LOGIN"}</h3>
                 </div>
+                </Link>
                 </div>
             <div className='content-large'><img src="./img/img.jpg" alt='img'></img>
                 <div className='textblock'>

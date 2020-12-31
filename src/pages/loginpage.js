@@ -1,20 +1,18 @@
 import React from 'react';
 import axios from 'axios';
 
-//totototototototototo
-class SecondPage extends React.Component{
+
+class LoginPage extends React.Component{
 
     constructor(props){
         super(props);
 
         this.state = {
-            name:'',
             email:'',
             pass:''            
         }
         this.handleChange=this.handleChange.bind(this);
         this.handleSubmit=this.handleSubmit.bind(this);
-        this.handleLogoutClick=this.handleLogoutClick.bind(this);
     }
 
     successfulAuth(data){
@@ -22,18 +20,6 @@ class SecondPage extends React.Component{
         // console.log(data+' DATA')
         this.props.history.push("/");
     } 
-
-    handleLogoutClick(){
-        axios.delete('http://localhost:5001/api/user/logout',{withCredentials:true})
-        .then(response=>{
-            this.props.handleLogout()
-            this.props.history.push("/");
-            console.log(response)
-        }).catch(err=>{
-            console.log(err);
-        })
-
-    }
 
     handleChange(event){
         console.log('Handle change',event)
@@ -47,14 +33,14 @@ class SecondPage extends React.Component{
     }
 
     sendReg(){
-        //https://backend-app-jk.herokuapp.com/api/user/register
-        axios.post('http://localhost:5001/api/user/register',{
+        //https://backend-app-jk.herokuapp.com/api/user/login
+        axios.post('http://localhost:5001/api/user/login',{
             email:this.state.email,
             password:this.state.pass,
-            name:this.state.name
+
         },{withCredentials:true})
         .then(response =>{
-            if(response.data.message==='registered'){
+            if(response.data.message==='loggedin'){
             this.successfulAuth(response.data.user);
             console.log(response.data)
             }
@@ -70,13 +56,6 @@ class SecondPage extends React.Component{
         return (
         <div>
             <form onSubmit={this.handleSubmit}>
-                
-                <input type="text" 
-                name="name" 
-                placeholder="Name" 
-                value={this.state.name} 
-                onChange={this.handleChange} 
-                required />
 
                 <input type="text" 
                 name="email" 
@@ -92,12 +71,11 @@ class SecondPage extends React.Component{
                 onChange={this.handleChange} 
                 required />
 
-                <button type="submit">Register</button>
-                <button onClick={()=>this.handleLogoutClick()}>Logout</button>
+                <button type="submit">Login</button>
             </form>
         <label>{this.props.loogedInStatus}</label>
         </div>)
     }
 }
 
-export default SecondPage;
+export default LoginPage;
