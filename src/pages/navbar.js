@@ -41,7 +41,7 @@ function Navbar(props){
                  </li>
                  <li>
                  <Link to='/secondpage' className='link'>
-                     {props.loogedInStatus}
+                     {props.userName.name ||'Register'}
                      </Link>
                  </li>
              </ul>
