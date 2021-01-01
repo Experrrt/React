@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
 
-class LoginPage extends React.Component {
+//totototototototototo
+class Registration extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      name: "",
       email: "",
       pass: "",
       loading: false,
@@ -15,7 +17,6 @@ class LoginPage extends React.Component {
   }
 
   handleChange(event) {
-    console.log("Handle change", event);
     this.setState({
       [event.target.name]: event.target.value,
     });
@@ -27,7 +28,7 @@ class LoginPage extends React.Component {
   }
 
   sendReg() {
-    //https://backend-app-jk.herokuapp.com/api/user/login
+    //https://backend-app-jk.herokuapp.com/api/user/register
     this.setState(
       {
         loading: true,
@@ -35,10 +36,11 @@ class LoginPage extends React.Component {
       () => {
         axios
           .post(
-            "http://localhost:5001/api/user/login",
+            "http://localhost:5001/api/user/register",
             {
               email: this.state.email,
               password: this.state.pass,
+              name: this.state.name,
             },
             { withCredentials: true }
           )
@@ -46,10 +48,10 @@ class LoginPage extends React.Component {
             this.setState({
               loading: false,
             });
-            if (response.data.message === "loggedin") {
+            if (response.data.message === "registered") {
               this.props.successfulAuth(response.data.user);
             } else {
-              console.log(response);
+              //////
             }
           })
           .catch((error) => {
@@ -63,6 +65,15 @@ class LoginPage extends React.Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={this.state.name}
+            onChange={this.handleChange}
+            required
+          />
+
           <input
             type="text"
             name="email"
@@ -81,7 +92,7 @@ class LoginPage extends React.Component {
             required
           />
 
-          <button type="submit">Login</button>
+          <button type="submit">Register</button>
         </form>
         {this.state.loading ? <h6>Loading</h6> : <h6></h6>}
       </div>
@@ -89,4 +100,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default Registration;
