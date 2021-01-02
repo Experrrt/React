@@ -11,6 +11,7 @@ class Registration extends React.Component {
       email: "",
       pass: "",
       loading: false,
+      message: " ",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,6 +33,7 @@ class Registration extends React.Component {
     this.setState(
       {
         loading: true,
+        message: " ",
       },
       () => {
         axios
@@ -45,13 +47,10 @@ class Registration extends React.Component {
             { withCredentials: true }
           )
           .then((response) => {
-            this.setState({
-              loading: false,
-            });
             if (response.data.message === "registered") {
               this.props.successfulAuth(response.data.user);
             } else {
-              //////
+              this.setState({ loading: false, message: response.data.message });
             }
           })
           .catch((error) => {
@@ -64,7 +63,7 @@ class Registration extends React.Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
+        <form autoComplete="off">
           <input
             type="text"
             name="name"
@@ -75,7 +74,7 @@ class Registration extends React.Component {
           />
 
           <input
-            type="text"
+            type="email"
             name="email"
             placeholder="Email"
             value={this.state.email}
@@ -92,9 +91,15 @@ class Registration extends React.Component {
             required
           />
 
-          <button type="submit">Register</button>
+          <button
+            type="submit"
+            onClick={this.state.loading ? undefined : this.handleSubmit}
+          >
+            Register
+          </button>
         </form>
         {this.state.loading ? <h6>Loading</h6> : <h6></h6>}
+        <h6>{this.state.message}</h6>
       </div>
     );
   }

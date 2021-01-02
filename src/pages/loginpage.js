@@ -9,6 +9,7 @@ class LoginPage extends React.Component {
       email: "",
       pass: "",
       loading: false,
+      message: " ",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,6 +32,7 @@ class LoginPage extends React.Component {
     this.setState(
       {
         loading: true,
+        message: " ",
       },
       () => {
         axios
@@ -43,12 +45,10 @@ class LoginPage extends React.Component {
             { withCredentials: true }
           )
           .then((response) => {
-            this.setState({
-              loading: false,
-            });
             if (response.data.message === "loggedin") {
               this.props.successfulAuth(response.data.user);
             } else {
+              this.setState({ loading: false, message: response.data.message });
               console.log(response);
             }
           })
@@ -62,28 +62,32 @@ class LoginPage extends React.Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={this.state.email}
-            onChange={this.handleChange}
-            required
-          />
+        <input
+          type="text"
+          name="email"
+          placeholder="Email"
+          value={this.state.email}
+          onChange={this.handleChange}
+          required
+        />
 
-          <input
-            type="password"
-            name="pass"
-            placeholder="Password"
-            value={this.state.pass}
-            onChange={this.handleChange}
-            required
-          />
+        <input
+          type="password"
+          name="pass"
+          placeholder="Password"
+          value={this.state.pass}
+          onChange={this.handleChange}
+          required
+        />
 
-          <button type="submit">Login</button>
-        </form>
+        <button
+          type="submit"
+          onClick={this.state.loading ? undefined : this.handleSubmit}
+        >
+          Login
+        </button>
         {this.state.loading ? <h6>Loading</h6> : <h6></h6>}
+        <h6>{this.state.message}</h6>
       </div>
     );
   }
