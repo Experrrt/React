@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
 
-class LoginPage extends React.Component {
+//totototototototototo
+class Registration extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      name: "",
       email: "",
       pass: "",
       loading: false,
@@ -16,7 +18,6 @@ class LoginPage extends React.Component {
   }
 
   handleChange(event) {
-    console.log("Handle change", event);
     this.setState({
       [event.target.name]: event.target.value,
     });
@@ -28,7 +29,7 @@ class LoginPage extends React.Component {
   }
 
   sendReg() {
-    //https://backend-app-jk.herokuapp.com/api/user/login
+    //https://backend-app-jk.herokuapp.com/api/user/register
     this.setState(
       {
         loading: true,
@@ -37,20 +38,20 @@ class LoginPage extends React.Component {
       () => {
         axios
           .post(
-            "http://localhost:5001/api/user/login",
+            "http://localhost:5001/api/user/register",
             {
               email: this.state.email,
               password: this.state.pass,
+              name: this.state.name,
             },
             { withCredentials: true }
           )
           .then((response) => {
-            if (response.data.message === "loggedin") {
+            if (response.data.message === "registered") {
               localStorage.setItem("token", response.data.token);
               this.props.successfulAuth(response.data.user);
             } else {
               this.setState({ loading: false, message: response.data.message });
-              console.log(response);
             }
           })
           .catch((error) => {
@@ -63,30 +64,41 @@ class LoginPage extends React.Component {
   render() {
     return (
       <div>
-        <input
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={this.state.email}
-          onChange={this.handleChange}
-          required
-        />
+        <form autoComplete="off">
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={this.state.name}
+            onChange={this.handleChange}
+            required
+          />
 
-        <input
-          type="password"
-          name="pass"
-          placeholder="Password"
-          value={this.state.pass}
-          onChange={this.handleChange}
-          required
-        />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={this.state.email}
+            onChange={this.handleChange}
+            required
+          />
 
-        <button
-          type="submit"
-          onClick={this.state.loading ? undefined : this.handleSubmit}
-        >
-          Login
-        </button>
+          <input
+            type="password"
+            name="pass"
+            placeholder="Password"
+            value={this.state.pass}
+            onChange={this.handleChange}
+            required
+          />
+
+          <button
+            type="submit"
+            onClick={this.state.loading ? undefined : this.handleSubmit}
+          >
+            Register
+          </button>
+        </form>
         {this.state.loading ? <h6>Loading</h6> : <h6></h6>}
         <h6>{this.state.message}</h6>
       </div>
@@ -94,4 +106,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default Registration;
