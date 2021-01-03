@@ -46,6 +46,7 @@ class LoginPage extends React.Component {
           )
           .then((response) => {
             if (response.data.message === "loggedin") {
+              localStorage.setItem("token", response.data.token);
               this.props.successfulAuth(response.data.user);
             } else {
               this.setState({ loading: false, message: response.data.message });

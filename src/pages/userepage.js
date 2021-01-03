@@ -32,6 +32,7 @@ class UserPage extends React.Component {
             withCredentials: true,
           })
           .then((response) => {
+            localStorage.clear();
             this.props.handleLogout();
             // this.props.history.push("/");
             this.setState({

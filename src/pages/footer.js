@@ -22,6 +22,7 @@ function Footer() {
   }, [message]);
 
   const sendEmail = () => {
+    console.log(localStorage.getItem("token"));
     if (!ready) return;
     setReady(false);
     axios
@@ -33,6 +34,8 @@ function Footer() {
           setMessage("Email sa uz pouziva");
         } else if (res.data == "registered") {
           setMessage("Email bol zaregistrovany");
+        } else if (res.data.loggedIn == false) {
+          setMessage("Log in first");
         } else {
           setMessage(res.data);
         }

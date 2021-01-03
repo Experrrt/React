@@ -9,6 +9,8 @@ import UserPage from "./pages/userepage";
 import Footer from "./pages/footer";
 import error from "./pages/pagenotfound";
 
+let Header;
+
 class App extends React.Component {
   constructor() {
     super();
@@ -22,6 +24,7 @@ class App extends React.Component {
   }
 
   handleLogin(data) {
+    this.handleHeader();
     this.setState({
       loogedInStatus: "LOGGED_IN",
       user: data,
@@ -29,19 +32,36 @@ class App extends React.Component {
   }
 
   handleLogout() {
-    // this.handleLogoutClick();
+    localStorage.clear();
+    this.handleHeader();
     this.setState({
       loogedInStatus: "NOT_LOGGED_IN",
       user: {},
     });
   }
-
+  handleHeader() {
+    if (!localStorage.getItem("token")) {
+      axios.interceptors.request.eject(Header);
+    } else {
+      Header = axios.interceptors.request.use(
+        (config) => {
+          config.headers.authtoken = localStorage.getItem("token");
+          return config;
+        },
+        (err) => {
+          return Promise.reject(err);
+        }
+      );
+    }
+  }
   checkLoginStatu() {
+    console.log(localStorage.getItem("token"));
     axios
       .get("http://localhost:5001/api/user/logged_in", {
         withCredentials: true,
       })
       .then((response) => {
+        console.log(response);
         if (
           response.data.loggedIn &&
           this.state.loogedInStatus == "NOT_LOGGED_IN"
@@ -66,6 +86,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.handleHeader();
     this.checkLoginStatu();
   }
 
