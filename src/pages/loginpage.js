@@ -1,97 +1,80 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
-class LoginPage extends React.Component {
-  constructor(props) {
-    super(props);
+function LoginPage(props){
+    const [loading,setLoading]=useState(false);
+    const [password,setPassword]=useState("");
+    const [email,setEmail]=useState("");
+    const [message,setMessage]=useState("");
+    const timeoutRef = useRef(null);
 
-    this.state = {
-      email: "",
-      pass: "",
-      loading: false,
-      message: " ",
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+    useEffect(() => {
+        if (message === "") return;
+        if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
+    
+        timeoutRef.current = setTimeout(() => {
+          setMessage("");
+          timeoutRef.current = null;
+        }, 5000);
+      }, [message]);
 
-  handleChange(event) {
-    console.log("Handle change", event);
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  }
+    const handleSubmit=(e)=>{
+        if(loading)return;
+        sendemail();
+        e.preventDefault();
+    }
 
-  handleSubmit(event) {
-    this.sendReg();
-    event.preventDefault();
-  }
+  function sendemail(){
+    setLoading(true);
+    setMessage("")
 
-  sendReg() {
-    //https://backend-app-jk.herokuapp.com/api/user/login
-    this.setState(
+    axios
+    .post(
+      "https://backend-app-jk.herokuapp.com/api/user/login",
       {
-        loading: true,
-        message: " ",
+        email:email,
+        password: password,
       },
-      () => {
-        axios
-          .post(
-            "http://localhost:5001/api/user/login",
-            {
-              email: this.state.email,
-              password: this.state.pass,
-            },
-            { withCredentials: true }
-          )
-          .then((response) => {
-            if (response.data.message === "loggedin") {
-              localStorage.setItem("token", response.data.token);
-              this.props.successfulAuth(response.data.user);
-            } else {
-              this.setState({ loading: false, message: response.data.message });
-              console.log(response);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    );
+      { withCredentials: true }
+    ).then((response)=>{
+        if (response.data.message === "loggedin") {
+            localStorage.setItem("token", response.data.token);
+            props.successfulAuth(response.data.user);
+          } else {
+            setLoading(false)
+            setMessage(response.data.message)
+            console.log(response);
+          }
+    }).catch((error) => console.log(error))
   }
 
-  render() {
-    return (
-      <div>
-        <input
+    return(
+        <div>
+            <input
           type="text"
           name="email"
           placeholder="Email"
-          value={this.state.email}
-          onChange={this.handleChange}
+          value={email}
+          onChange={e=>setEmail(e.target.value)}
           required
         />
-
-        <input
+         <input
           type="password"
-          name="pass"
+          name="password"
           placeholder="Password"
-          value={this.state.pass}
-          onChange={this.handleChange}
+          value={password}
+          onChange={e=>setPassword(e.target.value)}
           required
         />
 
         <button
           type="submit"
-          onClick={this.state.loading ? undefined : this.handleSubmit}
-        >
-          Login
-        </button>
-        {this.state.loading ? <h6>Loading</h6> : <h6></h6>}
-        <h6>{this.state.message}</h6>
-      </div>
-    );
-  }
+          onClick={handleSubmit}
+        >Login</button>
+        {loading ? <h6>Loading</h6> : <h6></h6>}
+        <h6>{message}</h6>
+        </div>
+    )
 }
 
 export default LoginPage;

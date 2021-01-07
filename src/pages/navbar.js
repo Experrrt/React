@@ -3,6 +3,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import "../css/navbar.css";
 import Icon from "../svg/svg.js";
 import { Link } from "react-router-dom";
+import Logout from "../scripts/logoutScript";
 
 function Navbar(props) {
   const [click, setClick] = useState(false);
@@ -10,6 +11,11 @@ function Navbar(props) {
     setClick(!click);
     console.log(click);
   };
+
+  const handleLogout = ()=>{
+    //props.history.push("/")
+    Logout(props.handleLogout);
+  }
 
   window.addEventListener("resize", () => {
     setClick(false);
@@ -33,11 +39,19 @@ function Navbar(props) {
             About
           </Link>
         </li>
+        {props.loggedIn == "NOT_LOGGED_IN" ? (
         <li>
           <Link to="/" className="link">
             Work
           </Link>
         </li>
+          ) : (
+            <li>
+            <Link to="/profile" className="link" >
+              Profile
+            </Link>
+          </li>
+            )}
         {props.loggedIn == "NOT_LOGGED_IN" ? (
           <li>
             <Link to="/userpage" className="link">
@@ -46,10 +60,10 @@ function Navbar(props) {
           </li>
         ) : (
           <li>
-            <Link to="/userpage" className="link">
-              Profile
+            <Link to="/" className="link" onClick={handleLogout}>
+              Logout
             </Link>
-          </li>
+          </li>     
         )}
       </ul>
       <div className="burger" onClick={handleClick}>

@@ -1,76 +1,68 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
-//totototototototototo
-class Registration extends React.Component {
-  constructor(props) {
-    super(props);
+function ReagistratioPage(props){
+    const [name,setName]=useState("")
+    const [email,setEmail]=useState("")
+    const [pass,setPass]=useState("")
+    const [message,setMessage]=useState("")
+    const [loading,setLoading]=useState(false)
+    const timeoutRef = useRef(null);
 
-    this.state = {
-      name: "",
-      email: "",
-      pass: "",
-      loading: false,
-      message: " ",
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+    useEffect(() => {
+        if (message === "") return;
+        if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
+    
+        timeoutRef.current = setTimeout(() => {
+          setMessage("");
+          timeoutRef.current = null;
+        }, 5000);
+      }, [message]);
 
-  handleChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  }
+    const handleSubmit=(e)=>{
+        if(loading)return;
+        sendReg();
+        e.preventDefault();
+    }
 
-  handleSubmit(event) {
-    this.sendReg();
-    event.preventDefault();
-  }
+     function sendReg(){
+         //https://backend-app-jk.herokuapp.com/api/user/register
+        setLoading(true)
+        setMessage("")
 
-  sendReg() {
-    //https://backend-app-jk.herokuapp.com/api/user/register
-    this.setState(
-      {
-        loading: true,
-        message: " ",
-      },
-      () => {
         axios
           .post(
-            "http://localhost:5001/api/user/register",
+            "https://backend-app-jk.herokuapp.com/api/user/register",
             {
-              email: this.state.email,
-              password: this.state.pass,
-              name: this.state.name,
+              email: email,
+              password: pass,
+              name: name,
             },
             { withCredentials: true }
           )
           .then((response) => {
             if (response.data.message === "registered") {
               localStorage.setItem("token", response.data.token);
-              this.props.successfulAuth(response.data.user);
+              props.successfulAuth(response.data.user);
             } else {
-              this.setState({ loading: false, message: response.data.message });
+                setLoading(false)
+                setMessage(response.data.message)
+                console.log(response);
             }
           })
-          .catch((error) => {
-            console.log(error);
-          });
+          .catch((error) => console.log(error));
       }
-    );
-  }
+    
 
-  render() {
-    return (
-      <div>
+    return(
+        <div>
         <form autoComplete="off">
           <input
             type="text"
             name="name"
             placeholder="Name"
-            value={this.state.name}
-            onChange={this.handleChange}
+            value={name}
+            onChange={e=>setName(e.target.value)}
             required
           />
 
@@ -78,8 +70,8 @@ class Registration extends React.Component {
             type="email"
             name="email"
             placeholder="Email"
-            value={this.state.email}
-            onChange={this.handleChange}
+            value={email}
+            onChange={e=>setEmail(e.target.value)}
             required
           />
 
@@ -87,23 +79,22 @@ class Registration extends React.Component {
             type="password"
             name="pass"
             placeholder="Password"
-            value={this.state.pass}
-            onChange={this.handleChange}
+            value={pass}
+            onChange={e=>setPass(e.target.value)}
             required
           />
 
           <button
             type="submit"
-            onClick={this.state.loading ? undefined : this.handleSubmit}
+            onClick={handleSubmit}
           >
             Register
           </button>
         </form>
-        {this.state.loading ? <h6>Loading</h6> : <h6></h6>}
-        <h6>{this.state.message}</h6>
+        {loading ? <h6>Loading</h6> : <h6></h6>}
+        <h6>{message}</h6>
       </div>
-    );
-  }
+        )
 }
 
-export default Registration;
+export default ReagistratioPage;
