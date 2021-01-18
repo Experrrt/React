@@ -3,12 +3,12 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
-import StartPage from "./pages/startPage";
+import StartPage from "./pages/startpage";
 import Nav from "./pages/navbar";
 import UserPage from "./pages/reglogPage";
 import Footer from "./pages/footer";
 import error from "./pages/pagenotfound";
-import ProfilePage from "./pages/profilePage"
+import ProfilePage from "./pages/profilePage";
 
 let Header;
 
@@ -18,15 +18,17 @@ class App extends React.Component {
 
     this.state = {
       loogedInStatus: "NOT_LOGGED_IN",
+      userLoading: "YES",
       user: {},
     };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.checkLoginStatu = this.checkLoginStatu.bind(this);
   }
 
   handleLogin(data) {
     this.handleHeader();
-    this.checkLoginStatu()
+    this.checkLoginStatu();
     // this.setState({
     //   loogedInStatus: "LOGGED_IN",
     //   user: data,
@@ -36,13 +38,13 @@ class App extends React.Component {
   handleLogout() {
     localStorage.clear();
     this.handleHeader();
-    this.checkLoginStatu()
+    this.checkLoginStatu();
     // this.setState({
     //   loogedInStatus: "NOT_LOGGED_IN",
     //   user: {},
     // });
   }
-  handleHeader() {
+  async handleHeader() {
     if (!localStorage.getItem("token")) {
       axios.interceptors.request.eject(Header);
     } else {
@@ -57,26 +59,22 @@ class App extends React.Component {
       );
     }
   }
-  checkLoginStatu() {
+  async checkLoginStatu() {
     console.log(localStorage.getItem("token"));
     axios
-      .get("https://backend-app-jk.herokuapp.com/api/user/logged_in", {
+      .get("http://localhost:5001/api/user/logged_in", {
         withCredentials: true,
       })
       .then((response) => {
         console.log(response);
-        if (
-          response.data.loggedIn &&
-          this.state.loogedInStatus == "NOT_LOGGED_IN"
-        ) {
+        if (response.data.loggedIn) {
+          console.log("ano");
           this.setState({
             loogedInStatus: "LOGGED_IN",
             user: response.data.user,
+            userLoading: "NO",
           });
-        } else if (
-          !response.data.loggedIn &&
-          this.state.loogedInStatus == "LOGGED_IN"
-        ) {
+        } else if (!response.data.loggedIn) {
           this.setState({
             loogedInStatus: "NOT_LOGGED_IN",
             user: {},
@@ -86,6 +84,25 @@ class App extends React.Component {
       .catch((err) => {
         console.log(err);
       });
+  }
+  async updateState() {
+    axios
+      .get("http://localhost:5001/api/user/logged_in", {
+        withCredentials: true,
+      })
+      .then((response) => {
+        this.setState({
+          user: response.data.user,
+        });
+      });
+  }
+  componentWillMount() {
+    if (localStorage.getItem("token")) {
+      this.setState({
+        loogedInStatus: "LOGGED_IN",
+        userLoading: "YES",
+      });
+    }
   }
 
   componentDidMount() {
@@ -127,7 +144,7 @@ class App extends React.Component {
                 />
               )}
             />
-              <Route
+            <Route
               path="/profile"
               exact
               render={(props) => (
@@ -135,11 +152,12 @@ class App extends React.Component {
                   {...props}
                   loogedInStatus={this.state.loogedInStatus}
                   user={this.state.user}
+                  checkLoginStatus={this.checkLoginStatu}
+                  userLoading={this.state.userLoading}
                 />
               )}
             />
             <Route path="/" component={error} />
-            
           </Switch>
           <Footer />
         </div>

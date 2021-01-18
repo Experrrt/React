@@ -26,7 +26,7 @@ function Footer() {
     if (!ready) return;
     setReady(false);
     axios
-      .post("https://backend-app-jk.herokuapp.com/api/newsletter", user)
+      .post("http://localhost:5001/api/newsletter", user)
       .then((res) => {
         console.log(res);
 

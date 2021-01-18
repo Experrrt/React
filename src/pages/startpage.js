@@ -7,9 +7,11 @@ class StartPage extends React.Component {
     super(props);
   }
 
-  componentDidMount() {}
-
   render() {
+    if (this.props.user == null) {
+      console.log("loading");
+      return <div>Loading</div>;
+    }
     return (
       <div className="container">
         <div className="content-large">

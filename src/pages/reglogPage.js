@@ -1,6 +1,6 @@
 import React from "react";
 import Registration from "./registrationPage";
-import Login from "./loginPage"
+import Login from "./loginpage"
 import axios from "axios";
 
 //totototototototototo
