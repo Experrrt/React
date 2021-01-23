@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
+import adress from "./apiAddress";
 import axios from "axios";
 
-async function Logout(props){
-
-    axios
-    .delete("https://backend-app-jk.herokuapp.com/api/user/logout", {
+async function Logout(props) {
+  axios
+    .delete(adress + "api/user/logout", {
       withCredentials: true,
     })
     .then((response) => {

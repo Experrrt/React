@@ -1,7 +1,7 @@
 import "../css/footer.css";
 // import React, { Component } from "react";
 // import axios from "axios";
-
+import adress from "../scripts/apiAddress";
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
@@ -26,7 +26,7 @@ function Footer() {
     if (!ready) return;
     setReady(false);
     axios
-      .post("http://localhost:5001/api/newsletter", user)
+      .post(adress + "api/newsletter", user)
       .then((res) => {
         console.log(res);
 

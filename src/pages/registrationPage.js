@@ -33,7 +33,7 @@ function ReagistratioPage(props) {
 
     axios
       .post(
-        "http://localhost:5001/api/user/register",
+        "https://backend-app-jk.herokuapp.com/api/user/register",
         {
           email: email,
           password: pass,

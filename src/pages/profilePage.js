@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import { Redirect } from "react-router-dom";
+import adress from "../scripts/apiAddress";
 import "../css/userProfile.css";
 
 function ProfilePage(props) {
@@ -10,7 +11,7 @@ function ProfilePage(props) {
     console.log(e.target.files[0]);
     const data = new FormData();
     data.append("image", e.target.files[0]);
-    axios.post("http://localhost:5001/api/user/fromdata", data).then((res) => {
+    axios.post(adress + "api/user/fromdata", data).then((res) => {
       props.checkLoginStatus();
     });
   };
@@ -27,12 +28,12 @@ function ProfilePage(props) {
           <h4>{props.userLoading === "YES" ? "username" : props.user.name}</h4>
 
           <div className="img_cont">
-            <label for="file-input">
+            <label htmlFor="file-input">
               <img
                 className="top1"
                 src={
                   props.userLoading === "YES"
-                    ? "./img/giphy.gif"
+                    ? "/img/giphy.gif"
                     : `data:image/gif;base64,${props.user.img}`
                 }
               />

@@ -9,6 +9,8 @@ import UserPage from "./pages/reglogPage";
 import Footer from "./pages/footer";
 import error from "./pages/pagenotfound";
 import ProfilePage from "./pages/profilePage";
+import ProfileViewer from "./pages/profileViewer";
+import adress from "./scripts/apiAddress";
 
 let Header;
 
@@ -62,7 +64,7 @@ class App extends React.Component {
   async checkLoginStatu() {
     console.log(localStorage.getItem("token"));
     axios
-      .get("http://localhost:5001/api/user/logged_in", {
+      .get(adress + "api/user/logged_in", {
         withCredentials: true,
       })
       .then((response) => {
@@ -154,6 +156,18 @@ class App extends React.Component {
                   user={this.state.user}
                   checkLoginStatus={this.checkLoginStatu}
                   userLoading={this.state.userLoading}
+                />
+              )}
+            />
+            <Route
+              path="/profileFind/:id"
+              exact
+              render={(props) => (
+                <ProfileViewer
+                  {...props}
+                  loogedInStatus={this.state.loogedInStatus}
+                  user={this.state.user}
+                  checkLoginStatus={this.checkLoginStatu}
                 />
               )}
             />

@@ -1,0 +1,27 @@
+.container-profile {
+  height: 200px;
+  width: 100%;
+  display: block;
+}
+.top1 {
+  border-radius: 50%;
+}
+.img_cont {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  left: 50%;
+  top: auto;
+  transform: translate(-50%, 0%);
+  transition: 0.4s ease-in-out;
+}
+.profile-name {
+  text-align: center;
+  font-size: 50px;
+}
+.profile-name-blur {
+  text-align: center;
+  font-size: 50px;
+  color: transparent;
+  text-shadow: 0 0 11px rgba(0, 0, 0, 0.5);
+}

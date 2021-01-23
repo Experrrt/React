@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-
+import adress from "../scripts/apiAddress";
 function LoginPage(props) {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
@@ -30,7 +30,7 @@ function LoginPage(props) {
 
     axios
       .post(
-        "http://localhost:5001/api/user/login",
+        adress + "api/user/login",
         {
           email: email,
           password: password,
