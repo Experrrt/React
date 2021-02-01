@@ -4,7 +4,7 @@ import axios from "axios";
 
 async function Logout(props) {
   axios
-    .delete(adress + "api/user/logout", {
+    .delete(adress + "api/user/auth/logout", {
       withCredentials: true,
     })
     .then((response) => {

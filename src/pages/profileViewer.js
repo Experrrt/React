@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import adress from "../scripts/apiAddress";
 import "../css/profileFinder.css";
 
@@ -26,12 +26,6 @@ function ProfileViewer(props) {
 
   return (
     <div>
-      {/* {props.loogedInStatus === "NOT_LOGGED_IN" ? (
-        <div>
-          {props.history.push("/userpage")}
-          <h1>Log in to see your profile</h1>
-        </div>
-      ) : ( */}
       <div className="container-profile">
         <h4 className={loading ? "profile-name-blur" : "profile-name"}>
           {loading ? "username" : user.name}
@@ -46,7 +40,6 @@ function ProfileViewer(props) {
           />
         </div>
       </div>
-      {/* )} */}
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { unstable_batchedUpdates } from "react-dom";
 import "../css/navbar.css";
 import Icon from "../svg/svg.js";
 import { Link } from "react-router-dom";
@@ -12,17 +11,17 @@ function Navbar(props) {
     console.log(click);
   };
 
-  const handleLogout = ()=>{
+  const handleLogout = () => {
     //props.history.push("/")
     Logout(props.handleLogout);
-  }
+  };
 
   window.addEventListener("resize", () => {
     setClick(false);
   });
 
   return (
-    <nav className="navbar">
+    <div className="navbar">
       <div className="logo">
         <Link to="/">
           <Icon />
@@ -40,18 +39,18 @@ function Navbar(props) {
           </Link>
         </li>
         {props.loggedIn == "NOT_LOGGED_IN" ? (
-        <li>
-          <Link to="/" className="link">
-            Work
-          </Link>
-        </li>
-          ) : (
-            <li>
-            <Link to="/profile" className="link" >
+          <li>
+            <Link to="/" className="link">
+              Work
+            </Link>
+          </li>
+        ) : (
+          <li>
+            <Link to="/profile" className="link">
               Profile
             </Link>
           </li>
-            )}
+        )}
         {props.loggedIn == "NOT_LOGGED_IN" ? (
           <li>
             <Link to="/userpage" className="link">
@@ -63,7 +62,7 @@ function Navbar(props) {
             <Link to="/" className="link" onClick={handleLogout}>
               Logout
             </Link>
-          </li>     
+          </li>
         )}
       </ul>
       <div className="burger" onClick={handleClick}>
@@ -73,7 +72,7 @@ function Navbar(props) {
           <div className="line3"></div>
         </ul>
       </div>
-    </nav>
+    </div>
   );
 }
 export default Navbar;

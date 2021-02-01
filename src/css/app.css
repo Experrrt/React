@@ -1,0 +1,8 @@
+body > #root > div {
+  min-height: 100vh;
+}
+.container-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(70px, 7vh) minmax(415px, auto) minmax(150px, 13vh);
+}

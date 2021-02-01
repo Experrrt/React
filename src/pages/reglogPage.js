@@ -1,6 +1,6 @@
 import React from "react";
 import Registration from "./registrationPage";
-import Login from "./loginpage"
+import Login from "./loginpage";
 import axios from "axios";
 
 //totototototototototo
@@ -58,14 +58,14 @@ class UserPage extends React.Component {
           //   {this.state.loading ? <h6>Loading</h6> : <h6></h6>}
           // </div>
         ) : ( */}
-          <div>
-            <Registration successfulAuth={this.successfulAuth} />
-            <Login successfulAuth={this.successfulAuth} />
-          </div>
+        <div>
+          <Registration successfulAuth={this.successfulAuth} />
+          <Login successfulAuth={this.successfulAuth} />
+        </div>
         {/* )} */}
       </div>
     );
   }
 }
 
-export default UserPage;
+// export default UserPage;

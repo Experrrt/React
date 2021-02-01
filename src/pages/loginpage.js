@@ -30,7 +30,7 @@ function LoginPage(props) {
 
     axios
       .post(
-        adress + "api/user/login",
+        adress + "api/user/auth/login",
         {
           email: email,
           password: password,

@@ -1,3 +1,7 @@
+.container-profile-main {
+  min-height: 80vh;
+  /* overflow-y: scroll; */
+}
 .container-profile {
   height: 200px;
   width: 100%;

@@ -16,12 +16,14 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.1",
+    "d3-ease": "^2.0.0",
     "firebase": "^8.2.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
-    "react-scroll": "^1.8.1"
+    "react-scroll": "^1.8.1",
+    "react-spring": "^8.0.27"
   },
   "eslintConfig": {
     "extends": "react-app"
