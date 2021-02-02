@@ -11,8 +11,9 @@
   justify-content: space-around;
   z-index: 1;
   align-items: center;
-  background-color: #ffd460;
+  background-color: transparent;
   font-family: "Poppins", sans-serif;
+  border-bottom: 5px solid red;
 }
 
 .logo svg {
@@ -20,6 +21,8 @@
   justify-self: start;
   cursor: pointer;
   margin-left: 3rem;
+  height: 48px;
+  width: 48px;
 }
 
 .nav-links {
@@ -34,8 +37,8 @@
   list-style: none;
   transition: all 0.2s ease-in-out;
   /* padding: 0.5rem 1rem; */
-  border-radius: 12px;
-  background: linear-gradient(45deg, #ea5455 50%, #ffd460 50%);
+  border-radius: 3px;
+  background: linear-gradient(45deg, #ba181b 50%, transparent 50%);
   /* ak len text tak */
   /* background-clip: text; */
   /* -webkit-text-fill-color: transparent; */
@@ -51,7 +54,7 @@
 .nav-links .link {
   height: 100%;
   width: 100%;
-  color: black;
+  color: white;
   text-align: center;
   text-decoration: none;
   padding: 1rem 0.75rem;

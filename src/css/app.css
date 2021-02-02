@@ -4,5 +4,6 @@ body > #root > div {
 .container-main {
   display: grid;
   grid-template-columns: 1fr;
+  background-color: #333533;
   grid-template-rows: minmax(70px, 7vh) minmax(415px, auto) minmax(150px, 13vh);
 }

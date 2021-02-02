@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import StartPage from "./pages/startpage";
 import Nav from "./pages/navbar";
-import UserPage from "./pages/userPage";
+import UserPage from "./pages/reglogPage";
 import Footer from "./pages/footer";
 import error from "./pages/pagenotfound";
 import ProfilePage from "./pages/profilePage";

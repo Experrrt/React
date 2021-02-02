@@ -42,6 +42,7 @@ function ReagistratioPage(props) {
         { withCredentials: true }
       )
       .then((response) => {
+        console.log(response);
         if (response.data.message === "registered") {
           localStorage.setItem("token", response.data.token);
           props.successfulAuth(response.data.user);
