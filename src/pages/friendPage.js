@@ -18,7 +18,9 @@ function FriendPage(props) {
   const [loading, setLoading] = useState(true);
   const [waiting, setWaiting] = useState(false);
   const [message, setMessage] = useState("");
-  const [tog, setTog] = useState(false);
+  const [animGoing, setanimGoing] = useState(true);
+  const [animGoing2, setanimGoing2] = useState(true);
+  const [textFocused, setTextFocused] = useState(false);
   const timeoutRef = useRef(null);
 
   useEffect(() => {
@@ -49,12 +51,12 @@ function FriendPage(props) {
     }, 5000);
   };
   const add = () => {
-    setTog(!tog);
+    // setTog(!tog);
     // setFriends([
     //   ...friends,
     //   { user: { name: "adada", id: Math.floor(Math.random() * 1000), img: "asdasdad" } },
     // ]);
-    // setFriends(friends.slice(1));
+    setFriends(friends.slice(1));
     // setFriends(friends.slice(1));
     // setFriendsRequests([
     //   ...friends,
@@ -139,6 +141,9 @@ function FriendPage(props) {
       .then((response) => {
         setLoading(false);
         if (response.data.message == "DE") return;
+        if (response.data.length == 0) {
+          setanimGoing(false);
+        }
         setFriends(response.data);
       });
   };
@@ -153,6 +158,9 @@ function FriendPage(props) {
       .then((response) => {
         setLoading(false);
         if (response.data.message == "DE") return;
+        if (response.data.length == 0) {
+          setanimGoing2(false);
+        }
         setFriendsRequests(response.data);
       });
   };
@@ -164,6 +172,9 @@ function FriendPage(props) {
     // enter: { marginTop: 0 },
     // leave: { marginTop: -100 },
     // config: { tension: 210, friction: 20 },
+    // onStart: () => setanimGoing(false),
+    onRest: () =>
+      friends.length <= 0 ? setanimGoing(false) : setanimGoing(true),
     config: config.wobbly,
     trail: 400 / friends.length,
   });
@@ -175,50 +186,97 @@ function FriendPage(props) {
     from: { opacity: 0, transform: "scale(0)" },
     enter: { opacity: 1, transform: "scale(1)" },
     leave: { opacity: 0, transform: "scale(0)" },
+    onRest: () =>
+      friendRequests.length <= 0 ? setanimGoing2(false) : setanimGoing2(true),
     config: config.wobbly,
     trail: 400 / friendRequests.length,
   });
-  const spring = useSpring({
-    from: { opacity: 0 },
-    opacity: 1,
-    config: { duration: 1200, easing: (t) => easeCubicIn(t) },
+  const [animUnderline, set] = useSpring(() => ({
+    width: "0%",
+  }));
+  const [animNoFrieds, setanimFriends] = useSpring(() => ({
+    opacity: 0,
+    config: config.slow,
+  }));
+  const [animNoFriedsR, setanimFriendsR] = useSpring(() => ({
+    opacity: 0,
+    config: config.slow,
+  }));
+  const animButton = useSpring({
+    to: async (next) => {
+      await next({
+        transform: textFocused
+          ? "translate3d(0px,0,0) scale(1.2) rotateX(0deg)"
+          : "translate3d(0px,0,0) scale(1) rotateX(0deg)",
+      });
+      await next({
+        transform: textFocused
+          ? "translate3d(0px,0,0) scale(1) rotateX(0deg)"
+          : "translate3d(0px,0,0) scale(1) rotateX(0deg)",
+      });
+    },
+    from: { transform: "translate3d(0px,0,0) scale(1) rotateX(0deg)" },
+    config: { duration: 100 },
   });
   return (
     <div className="contt">
       <div className="const-send">
-        <input
-          type="text"
-          name="email"
-          placeholder="Friends ID"
-          value={ID}
-          onChange={(e) => setID(e.target.value)}
-          required
-        />
-        <button className="butonn" type="submit" onClick={add}>
-          SEND
-        </button>
-        <h6>{message}</h6>
+        <div className="const-form">
+          <div className="input">
+            <input
+              autoComplete="off"
+              onFocus={() => {
+                set({ width: "100%" });
+                setTextFocused(true);
+              }}
+              onBlur={() => {
+                set({ width: "0%" });
+                setTextFocused(false);
+              }}
+              type="text"
+              name="email"
+              placeholder="Friends ID"
+              value={ID}
+              onChange={(e) => setID(e.target.value)}
+              required
+            />
+            <animated.div style={animUnderline} className="underline" />
+          </div>
+          <animated.button
+            style={animButton}
+            className="butonn"
+            type="submit"
+            onClick={add}
+          >
+            SEND
+          </animated.button>
+          <h6>{message}</h6>
+        </div>
       </div>
-      <div className="devider"></div>
-      {friends.length == 0 ? (
+      {/* <div className="devider"></div> */}
+      {!animGoing ? (
         <div className="container-main-friends">
-          <div className="container-sub-friends">
+          {setanimFriends({ opacity: 1 })}
+          <li className="cont-element">
             {props.loogedInStatus === "LOGGED_IN" &&
             props.userLoading === "NO" ? (
-              <p className="profile-name">No friends</p>
+              <animated.p style={animNoFrieds} className="profile-name">
+                No friends
+              </animated.p>
             ) : (
               <div className="img_cont">
                 <img className="top1" src="/img/giphy.gif" />
               </div>
             )}
-          </div>
+          </li>
         </div>
       ) : (
         <div className="container-main-friends">
           {transition.map(({ item, props, key }) => (
             <animated.li className="cont-element" key={key} style={props}>
               <div className="container-sub-friends">
-                <div className="img_cont">
+                <span className="pro">PRO</span>
+                <div className="img_contt">
                   <img
                     className="top1"
                     src={
@@ -228,34 +286,45 @@ function FriendPage(props) {
                     }
                   />
                 </div>
-                <animated.p style={spring} className="profile-name">
-                  {item.user.name}
-                </animated.p>
+                <div className="profile-cont">
+                  <h3 className="profile-name">{item.user.name}</h3>
+                  <p>
+                    User interface designer and <br /> front-end developer
+                  </p>
+                  <div className="buttons">
+                    <button className="primary">Message</button>
+                    <button className="primary ghost">Following</button>
+                  </div>
+                </div>
               </div>
             </animated.li>
           ))}
         </div>
       )}
-      <div className="devider"></div>
-      {friendRequests.length == 0 ? (
+      {/* <div className="devider"></div> */}
+      {!animGoing2 ? (
         <div className="container-main-friendRequests">
-          <div className="container-sub-friendRequests">
+          {setanimFriendsR({ opacity: 1 })}
+          <li className="cont-element">
             {props.loogedInStatus === "LOGGED_IN" &&
             props.userLoading === "NO" ? (
-              <p className="profile-name">No friend request</p>
+              <animated.p style={animNoFriedsR} className="profile-name">
+                No friend request
+              </animated.p>
             ) : (
-              <div className="img_cont">
+              <div className="img_contt">
                 <img className="top1" src="/img/giphy.gif" />
               </div>
             )}
-          </div>
+          </li>
         </div>
       ) : (
         <div className="container-main-friendRequests">
           {transition2.map(({ item, props, key }) => (
             <animated.li className="cont-element" key={key} style={props}>
               <div className="container-sub-friendRequests">
-                <div className="img_cont">
+                <span className="pro">PRO</span>
+                <div className="img_contt">
                   <img
                     className="top1"
                     src={
@@ -265,10 +334,22 @@ function FriendPage(props) {
                     }
                   />
                 </div>
-                <p className="profile-name">{item.user.name}</p>
-                <button onClick={() => acceptFriendRequests(item.user.id)}>
-                  ACCEPT
-                </button>
+                <div className="profile-cont">
+                  <h3 className="profile-name">{item.user.name}</h3>
+                  <p>
+                    User interface designer and <br /> front-end developer
+                  </p>
+                  <div className="buttons">
+                    {/* <button class="primary">Message</button> */}
+                    <button
+                      className="primary"
+                      onClick={() => acceptFriendRequests(item.user.id)}
+                    >
+                      Accept
+                    </button>
+                    <button className="primary ghost">Profile</button>
+                  </div>
+                </div>
               </div>
             </animated.li>
           ))}

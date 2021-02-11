@@ -16,7 +16,7 @@ class StartPage extends React.Component {
       <div className="container">
         <div className="content-large">
           <Link to="/login">
-            <img src="./img/4k.jpg" alt="img"></img>
+            <img src="./img/imggg.jfif" alt="img"></img>
             <div className="textblock">
               <h3>{this.props.user.name || "LOGIN"}</h3>
             </div>

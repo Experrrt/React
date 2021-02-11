@@ -3,76 +3,97 @@ import "../css/navbar.css";
 import Icon from "../svg/svg.js";
 import { Link } from "react-router-dom";
 import Logout from "../scripts/logoutScript";
+import { FiBox, FiUser, FiUsers, FiLogOut } from "react-icons/fi";
+import {
+  useTransition,
+  animated,
+  useChain,
+  config,
+  useSpring,
+} from "react-spring";
 
 function Navbar(props) {
-  const [click, setClick] = useState(false);
-  const handleClick = () => {
-    setClick(!click);
-    console.log(click);
-  };
-
+  const [click, setClick] = useState(true);
+  const [over, setOver] = useState(false);
   const handleLogout = () => {
-    //props.history.push("/")
     Logout(props.handleLogout);
   };
 
-  window.addEventListener("resize", () => {
-    setClick(false);
+  const animateNav = useSpring({
+    height: click ? "4vh" : "70vh",
+    borderRadius: click ? "5rem" : "1rem",
+  });
+  const animatedSvg = useSpring({
+    transform: click ? "rotateX(0deg)" : "rotateX(180deg)",
   });
 
   return (
-    <div className="navbar">
-      <div className="logo">
-        <Link to="/">
-          <Icon />
-        </Link>
-      </div>
+    <animated.div style={animateNav} className="navbar">
+      <animated.div
+        onMouseOver={() => setOver(true)}
+        onMouseLeave={() => setOver(false)}
+        className="logo"
+        style={animatedSvg}
+        onClick={() => setClick(!click)}
+      >
+        {/* <Link to="/"></Link> */}
+        <Icon click={click} />
+      </animated.div>
       <ul className="nav-links">
-        <li>
+        <li className="nav-list-el">
           <Link to="/" className="link">
-            Home
+            <FiBox />
           </Link>
+          <h6>Index</h6>
         </li>
-        <li>
+        <li className="nav-list-el">
           <Link to="/" className="link">
-            About
+            <FiUsers />
           </Link>
+          <h6>Friends</h6>
         </li>
         {props.loggedIn == "NOT_LOGGED_IN" ? (
-          <li>
+          <li className="nav-list-el">
             <Link to="/" className="link">
-              Work
+              <FiUsers />
             </Link>
+            <h6>Friends</h6>
           </li>
         ) : (
-          <li>
-            <Link to="/profile" className="link">
-              Profile
+          <li className="nav-list-el">
+            <Link to="/friends" className="link">
+              <FiUser />
             </Link>
+            <h6>Friends</h6>
           </li>
         )}
         {props.loggedIn == "NOT_LOGGED_IN" ? (
-          <li>
+          <li className="nav-list-el">
             <Link to="/userpage" className="link">
-              Register
+              <FiUser />
             </Link>
+            <h6>Login</h6>
           </li>
         ) : (
-          <li>
+          <li className="nav-list-el">
             <Link to="/" className="link" onClick={handleLogout}>
-              Logout
+              <FiLogOut />
             </Link>
+            <h6>Logout</h6>
           </li>
         )}
       </ul>
-      <div className="burger" onClick={handleClick}>
-        <ul className={click ? "open" : "close"}>
-          <div className="line1"></div>
-          <div className="line2"></div>
-          <div className="line3"></div>
-        </ul>
+      <div className="profile-pic-nav">
+        <Link to="/profile"></Link>
+        <img
+          src={
+            props.loggedIn === "LOGGED_IN" && props.userLoading === "NO"
+              ? `data:image/gif;base64,${props.user.img}`
+              : "/img/giphy.gif"
+          }
+        />
       </div>
-    </div>
+    </animated.div>
   );
 }
 export default Navbar;

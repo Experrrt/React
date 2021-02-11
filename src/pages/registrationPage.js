@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import adress from "../scripts/apiAddress";
+import "../css/register.css";
+import BtnIcon from "../svg/btn-svg";
 
 function ReagistratioPage(props) {
   const [name, setName] = useState("");
@@ -33,7 +36,7 @@ function ReagistratioPage(props) {
 
     axios
       .post(
-        "https://backend-app-jk.herokuapp.com/api/user/auth/register",
+        adress + "api/user/auth/register",
         {
           email: email,
           password: pass,
@@ -66,7 +69,6 @@ function ReagistratioPage(props) {
           onChange={(e) => setName(e.target.value)}
           required
         />
-
         <input
           type="email"
           name="email"
