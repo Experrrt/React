@@ -10,23 +10,35 @@ import {
   config,
   useSpring,
 } from "react-spring";
+import userEvent from "@testing-library/user-event";
 
 function LoginPage(props) {
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [emailMsg, setEmailMsg] = useState("");
+  const [passMsg, setPassMsg] = useState("");
   const timeoutRef = useRef(null);
 
   useEffect(() => {
-    if (message === "") return;
-    if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
+    props.setBlur(loading);
+  }, [loading]);
 
-    timeoutRef.current = setTimeout(() => {
-      setMessage("");
-      timeoutRef.current = null;
-    }, 5000);
-  }, [message]);
+  useEffect(() => {
+    var re = /\S+@\S+\.\S+/;
+    if (email.length != 0 && !re.test(email)) {
+      setEmailMsg("Please enter valid email");
+    } else {
+      setEmailMsg("");
+    }
+  }, [email]);
+  useEffect(() => {
+    if (password.length != 0 && password.length <= 6) {
+      setPassMsg("Password is at least 6 characters");
+    } else {
+      setPassMsg("");
+    }
+  }, [password]);
 
   const handleSubmit = (e) => {
     if (loading) return;
@@ -35,9 +47,20 @@ function LoginPage(props) {
   };
 
   function sendemail() {
+    if (
+      (email.length <= 0) | (password.length <= 0) ||
+      emailMsg != "" ||
+      passMsg != ""
+    ) {
+      if (email.length <= 0) {
+        setEmailMsg("Email cannot be blank");
+      }
+      if (password.length <= 0) {
+        setPassMsg("Password cannot be blank");
+      }
+      return;
+    }
     setLoading(true);
-    setMessage("");
-
     axios
       .post(
         adress + "api/user/auth/login",
@@ -48,13 +71,25 @@ function LoginPage(props) {
         { withCredentials: true }
       )
       .then((response) => {
+        props.setBlur("blur(0px)");
         if (response.data.message === "loggedin") {
           localStorage.setItem("token", response.data.token);
           props.successfulAuth(response.data.user);
         } else {
           setLoading(false);
-          setMessage(response.data.message);
+          switch (response.data.message) {
+            case "IE":
+              setEmailMsg("Email is incorrect");
+              break;
+            case "IP":
+              setPassMsg("Password is incorrect");
+              console.log(passMsg);
+              break;
+          }
           console.log(response);
+          if (passMsg == "") {
+            console.log("SADASDASDs");
+          }
         }
       })
       .catch((error) => console.log(error));
@@ -73,7 +108,7 @@ function LoginPage(props) {
         <input
           id="email"
           className="user-box-input"
-          autoComplete="off"
+          autoComplete="new-password"
           type="text"
           name="email"
           value={email}
@@ -88,8 +123,12 @@ function LoginPage(props) {
         <animated.label style={animFormUn1} className="label">
           Username
         </animated.label>
-        <div className="user-box-underline-off">
+        <div
+          style={{ backgroundColor: emailMsg != "" ? "#FF0000" : "#808080" }}
+          className="user-box-underline-off"
+        >
           <div className="user-box-underline" />
+          <p className="warn-message">{emailMsg}</p>
         </div>
       </div>
       <div className="user-box">
@@ -110,21 +149,26 @@ function LoginPage(props) {
         <animated.label style={animFormUn2} className="label">
           Password
         </animated.label>
-        <div className="user-box-underline-off">
+        <div
+          style={{ backgroundColor: passMsg != "" ? "#FF0000" : "#808080" }}
+          className="user-box-underline-off"
+        >
           <div className="user-box-underline" />
         </div>
+        <p className="warn-message">{passMsg}</p>
       </div>
       <button
         className="login-button-submit"
         type="submit"
         onClick={handleSubmit}
+        style={{
+          filter: emailMsg || passMsg ? "grayscale(1)" : "grayscale(0)",
+        }}
       >
         <BtnIcon classa={"btn-icon"}></BtnIcon>
         <div className="btn-bckground"> Login</div>
         <BtnIcon classa={"btn-icon-down"}></BtnIcon>
       </button>
-      {loading ? <h6>Loading</h6> : <h6></h6>}
-      <h6>{message}</h6>
     </div>
   );
 }

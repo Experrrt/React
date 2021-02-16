@@ -1,7 +1,7 @@
 .login-sub {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 1.5rem;
   align-items: center;
   width: 100%;
 }
@@ -26,7 +26,7 @@
   font-size: 16px;
   color: #fff;
   pointer-events: none;
-  /* transition: 0.5s; */
+  /* tiransition: 0.5s; */
 }
 .login-button-submit {
   position: relative;
@@ -47,6 +47,7 @@
   padding: 10px 20px;
   outline: none;
   transition: all 0.05s ease-in;
+  transition: filter 0.15s ease-in-out;
   cursor: pointer;
 }
 .login-button-submit text {
@@ -103,6 +104,10 @@
   height: inherit;
   width: 0%;
   transition: 0.5s ease-in-out;
+}
+.warn-message {
+  position: absolute;
+  top: 1.45rem;
 }
 .login-button-submit:hover .btn-icon-down {
   transform: scale(0);

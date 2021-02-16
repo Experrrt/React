@@ -16,6 +16,18 @@ import BtnIcon from "../svg/btn-svg";
 function UserPage(props) {
   const [ghostBtn, setGhostBtn] = useState(false);
 
+  const setBlur = (loading) => {
+    if (loading) {
+      setBlurAnim({
+        backdropFilter: "blur(4.5px)",
+      });
+    } else {
+      setBlurAnim({
+        backdropFilter: "blur(0.06px)",
+      });
+    }
+  };
+
   const succesfulAuth = (data) => {
     props.handleLogin(data);
     props.history.goBack();
@@ -24,9 +36,16 @@ function UserPage(props) {
   const [animDivSwitch, setDivSwitch] = useSpring(() => ({
     marginLeft: "0px",
   }));
+  const [blurAnim, setBlurAnim] = useSpring(() => ({
+    backdropFilter: "blur(0.06px)",
+  }));
 
   return (
     <div className="userpage-main-cont">
+      <animated.div
+        style={blurAnim}
+        className="userpage-blur-cont"
+      ></animated.div>
       <div className="userpage-sub-cont">
         <Logo></Logo>
         <div className="reg-buttons">
@@ -38,7 +57,7 @@ function UserPage(props) {
               setGhostBtn(false);
             }}
           >
-            <text>Register</text>
+            Register
           </button>
           <BtnIcon classa={"btn-icon-reg"}></BtnIcon>
           <button
@@ -49,15 +68,15 @@ function UserPage(props) {
               setGhostBtn(true);
             }}
           >
-            <text>Login</text>
+            Login
           </button>
         </div>
         <div className="reglog-main-cont">
           <animated.div style={animDivSwitch} className="register-main-cont">
-            <Registration successfulAuth={succesfulAuth} />
+            <Registration successfulAuth={succesfulAuth} setBlur={setBlur} />
           </animated.div>
           <div className="login-main-cont">
-            <Login successfulAuth={succesfulAuth} />
+            <Login successfulAuth={succesfulAuth} setBlur={setBlur} />
           </div>
         </div>
       </div>

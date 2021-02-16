@@ -272,9 +272,14 @@ function FriendPage(props) {
         </div>
       ) : (
         <div className="container-main-friends">
-          {transition.map(({ item, props, key }) => (
-            <animated.li className="cont-element" key={key} style={props}>
-              <div className="container-sub-friends">
+          {transition.map(({ item, props: propsAnim, key }) => (
+            <animated.li className="cont-element" key={key} style={propsAnim}>
+              <div
+                onClick={() =>
+                  props.history.push("/profileFind/" + item.user.id)
+                }
+                className="container-sub-friends"
+              >
                 <span className="pro">PRO</span>
                 <div className="img_contt">
                   <img

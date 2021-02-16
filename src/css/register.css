@@ -1,6 +1,7 @@
-.register-main-cont {
-  background-color: antiquewhite;
-  min-height: 400px;
-  min-width: 400px;
-  /* position: absolute; */
+.register-sub {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }

@@ -14,6 +14,7 @@
   flex-direction: row;
   gap: 1rem;
   color: #b3b8cd;
+  cursor: pointer;
   /* justify-content: center; */
   /* align-items: center; */
   /* justify-content: flex-start; */
@@ -35,6 +36,7 @@
   flex-direction: row;
   gap: 1rem;
   color: #b3b8cd;
+  cursor: pointer;
   /* overflow-y: scroll; */
 }
 .pro {
@@ -168,13 +170,13 @@
   object-fit: contain;
 }
 button.primary {
+  z-index: 10;
   background-color: #03bfcb;
   border: 1px solid #03bfcb;
   border-radius: 3px;
   color: #231e39;
-  font-family: Montserrat, sans-serif;
   font-weight: 500;
-  padding: 10px 25px;
+  padding: 8px 23px;
 }
 button.primary.ghost {
   margin-left: 5px;

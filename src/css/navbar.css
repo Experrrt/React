@@ -102,21 +102,21 @@
   box-shadow: inset 5px 0 0 0 #ffd805;
   color: white;
 }
-/* .logo:hover {
-  animation: updown 0.7s infinite ease-in-out;
-} */
+.logo:hover {
+  animation: none;
+}
 .nav-links h6 {
   height: 12px;
   position: relative;
 }
 @keyframes updown {
-  0% {
+  86% {
     top: 0px;
   }
-  7% {
+  93% {
     top: 5px;
   }
-  14% {
+  100% {
     top: 0px;
   }
 }

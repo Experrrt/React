@@ -5,5 +5,5 @@ body > #root > div {
   display: grid;
   grid-template-columns: 1fr;
   background-color: #222831;
-  grid-template-rows: minmax(415px, auto) minmax(120px, 120px);
+  grid-template-rows: minmax(700px, auto) minmax(120px, 120px);
 }
