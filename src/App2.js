@@ -11,6 +11,7 @@ import ProfilePage from "./pages/profilePage";
 import ProfileViewer from "./pages/profileViewer";
 import FriendPage from "./pages/friendPage";
 import Test from "./pages/test";
+import Messages from "./pages/messages";
 
 import adress from "./scripts/apiAddress";
 
@@ -140,6 +141,7 @@ function App() {
                 loogedInStatus={logInStatus}
                 user={user}
                 checkLoginStatus={checkLoginStatus}
+                userLoading={userLoading}
               />
             )}
           />
@@ -154,6 +156,19 @@ function App() {
                 checkLoginStatus={checkLoginStatus}
                 userLoading={userLoading}
               />
+            )}
+          />
+          <Route
+            path="/messages"
+            exact
+            render={(props) => (
+              <Messages
+                {...props}
+                loogedInStatus={logInStatus}
+                user={user}
+                checkLoginStatus={checkLoginStatus}
+                userLoading={userLoading}
+              ></Messages>
             )}
           />
           <Route path="/" component={error} />

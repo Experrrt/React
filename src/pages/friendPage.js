@@ -144,6 +144,7 @@ function FriendPage(props) {
         if (response.data.length == 0) {
           setanimGoing(false);
         }
+        console.log(response.data);
         setFriends(response.data);
       });
   };

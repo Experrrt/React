@@ -3,13 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Redirect } from "react-router-dom";
 import adress from "../scripts/apiAddress";
 import "../css/userProfile.css";
-import {
-  useTransition,
-  animated,
-  useChain,
-  config,
-  useSpring,
-} from "react-spring";
+import { animated, useSpring } from "react-spring";
 
 function ProfilePage(props) {
   const [selectedFile1, setSelectedFile1] = useState("");
@@ -33,9 +27,11 @@ function ProfilePage(props) {
       props.loogedInStatus === "LOGGED_IN" &&
       props.userLoading === "NO"
     ) {
-      setBlurAnim({ backdropFilter: "blur(0.06px)", pointerEvents: "none" });
       setEdName(props.user.name);
       setEdDesc(props.user.desc);
+      setTimeout(() => {
+        setBlurAnim({ backdropFilter: "blur(0.06px)", pointerEvents: "none" });
+      }, 200);
     }
     return () => (mouted = false);
   }, [props.userLoading]);
@@ -71,7 +67,6 @@ function ProfilePage(props) {
         !selectedFile2)
     )
       return;
-    setBlurAnim({ backdropFilter: "blur(10px)", pointerEvents: "all" });
     let type = "";
     if (selectedFile2) type += "p";
     if (selectedFile1) type += "b";
