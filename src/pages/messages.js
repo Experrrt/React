@@ -4,13 +4,7 @@ import adress from "../scripts/apiAddress";
 import axios from "axios";
 import "../css/messages.css";
 import MessageRendering from "../Components/MemoComps";
-import {
-  useTransition,
-  animated,
-  useChain,
-  config,
-  useSpring,
-} from "react-spring";
+import { animated, useSpring } from "react-spring";
 
 function Messages(props) {
   const [message, setMessage] = useState("");
@@ -18,7 +12,6 @@ function Messages(props) {
   const [joinRoomName, setJoinRoomName] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [currentRoom, setCurrentRoom] = useState("");
-  const [lastRoom, setLastRoom] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [userRooms, setUserRooms] = useState([]);
   const [usersInRooms, setUsersInRooms] = useState([]);
@@ -28,7 +21,7 @@ function Messages(props) {
   const [showPopup, setShowPopup] = useState(false);
   const [roomMessagesLen, setRoomMessagesLen] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(20);
-  const chatContainer = useRef(0);
+  const chatContainer = useRef(null);
   const timeoutRef = useRef(null);
   const textAreaRef = useRef(null);
 
@@ -65,7 +58,6 @@ function Messages(props) {
     if (!newMessage) return;
     setChatMessages([newMessage, ...chatMessages]);
     setCurrentIndex(currentIndex + 1);
-    // setChatMessages([...chatMessages, newMessage]);
     setCanScroll(true);
   }, [newMessage]);
 
@@ -73,16 +65,6 @@ function Messages(props) {
     if (!newUsersInRooms) return;
     setUsersInRooms([...usersInRooms, ...newUsersInRooms]);
   }, [newUsersInRooms]);
-
-  const scrollToBot = () => {
-    console.log(
-      chatContainer.current.scrollHeight - chatContainer.current.clientHeight
-    );
-    chatContainer.current.scrollTo(
-      0,
-      chatContainer.current.scrollHeight - chatContainer.current.clientHeight
-    );
-  };
 
   const joinRoom = (roomID) => {
     if (!roomID || roomID == currentRoom) return;
@@ -98,25 +80,8 @@ function Messages(props) {
       last: currentRoom,
     });
     setCurrentRoom(roomID);
-    // console.log(userRooms);
-    // setCurrentRoom(
-    //   userRooms.map((x) => {
-    //     if (x.id == roomID) {
-    //       return {
-    //         name: x.name,
-    //       };
-    //     }
-    //   })
-    // );
-    getMessages(roomID);
+    getChatMessages(roomID);
   };
-
-  useEffect(() => {
-    console.log(currentRoom);
-  }, [currentRoom]);
-  useEffect(() => {
-    console.log(currentIndex);
-  }, [currentIndex]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -164,28 +129,16 @@ function Messages(props) {
         setUsersInRooms(response.data);
       });
   };
-  useEffect(() => {
-    // if (roomMessagesLen + 10 < currentIndex) return;
-    // loadMoreMessages(currentRoom, chatMessages);
-  }, [currentIndex]);
 
-  const loadTen = () => {
-    if (roomMessagesLen + 20 < currentIndex) return;
-    loadMoreMessages(currentRoom, chatMessages, currentIndex + 20);
-    setCurrentIndex(currentIndex + 20);
-  };
-
-  const getMessages = (roomID) => {
+  const getChatMessages = (roomID) => {
     axios
       .post(adress + "api/chatRooms/getRoomContent", {
         id: roomID,
       })
       .then((response) => {
-        console.log("getMessages");
         if (!response.data.messages) return;
         const reversed = response.data.messages.reverse();
         setChatMessages([...reversed]);
-        console.log([...reversed]);
         setRoomMessagesLen(response.data.messagesLength);
         getRoomUsers(response.data.users);
       });
@@ -197,20 +150,31 @@ function Messages(props) {
         index: index,
       })
       .then((response) => {
-        console.log("loadMessages");
         if (!response.data.messages) return;
         const reversed = response.data.messages.reverse();
         setChatMessages([...chatMessages, ...reversed]);
-        console.log([...chatMessages, ...reversed]);
       });
   };
 
-  const onEnterPress = (e) => {
+  const handleMessagesLoad = () => {
+    if (roomMessagesLen + 20 < currentIndex) return;
+    loadMoreMessages(currentRoom, chatMessages, currentIndex + 20);
+    setCurrentIndex(currentIndex + 20);
+  };
+
+  const scrollToBot = () => {
+    chatContainer.current.scrollTo(
+      0,
+      chatContainer.current.scrollHeight - chatContainer.current.clientHeight
+    );
+  };
+
+  const onEnterPressSend = (e) => {
     if (e.keyCode == 13 && e.shiftKey == false && /\S/.test(message)) {
       sendMessage(e);
     }
   };
-  const CopiedPopup = () => {
+  const copiedPopup = () => {
     setShowPopup(true);
     if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
@@ -219,17 +183,32 @@ function Messages(props) {
     }, 3000);
   };
 
-  function setCanScrollM() {
-    console.log("teraz");
-    setCanScroll(true);
-  }
-  const animateSide = useSpring({
+  const getCurrent = () => {
+    return userRooms.find((x) => x.id == currentRoom);
+  };
+
+  const checkIfTop = (e) => {
+    if (
+      e.target.clientHeight - e.target.scrollHeight >=
+        Math.round(e.target.scrollTop - 10) &&
+      e.target.clientHeight - e.target.scrollHeight <=
+        Math.round(e.target.scrollTop + 10)
+    ) {
+      if (timeoutRef.current !== null) return;
+      timeoutRef.current = setTimeout(() => {
+        timeoutRef.current = null;
+      }, 1500);
+      handleMessagesLoad();
+    }
+  };
+
+  const animateSideDiv = useSpring({
     right: click ? "-32%" : "0%",
   });
   const animBlur = useSpring({
     filter: click ? "blur(0px)" : "blur(10px)",
   });
-  const animatePop = useSpring({
+  const animatePopup = useSpring({
     transform: showPopup ? "scale(1)" : "scale(0.75)",
     visibility: showPopup ? "visible" : "hidden",
     config: { mass: 1, tension: 180, friction: 8 },
@@ -237,26 +216,6 @@ function Messages(props) {
   const [animateMessageDiv, setAnimateMessageDiv] = useSpring(() => ({
     transform: "translate(-101%, 0)",
   }));
-
-  const getCurrent = () => {
-    return userRooms.find((x) => x.id == currentRoom);
-  };
-  const checkIfTop = (e) => {
-    if (
-      e.target.clientHeight - e.target.scrollHeight ==
-      Math.round(e.target.scrollTop - 1)
-    ) {
-      if (timeoutRef.current !== null) return;
-      timeoutRef.current = setTimeout(() => {
-        timeoutRef.current = null;
-      }, 1500);
-      loadTen();
-      console.log("top");
-    }
-    // console.log(e.target.clientHeight - e.target.scrollHeight);
-    // console.log(e.target.scrollHeight);
-    // console.log(Math.round(e.target.scrollTop - 1));
-  };
 
   return (
     <div className="cont-main-msg">
@@ -267,8 +226,7 @@ function Messages(props) {
         value={joinRoomName}
         onChange={(e) => setJoinRoomName(e.target.value)}
       />
-      {/* {() => joinNewRoom()} */}
-      <button onClick={() => loadTen()}>JOIN ROOM</button>
+      <button onClick={() => joinNewRoom()}>JOIN ROOM</button>
       <input
         type="text"
         name="id"
@@ -287,18 +245,18 @@ function Messages(props) {
                   className="room-nav-id"
                   onClick={() => {
                     navigator.clipboard.writeText(currentRoom);
-                    CopiedPopup();
+                    copiedPopup();
                   }}
                 >
                   id: {currentRoom}
                 </p>
-                <animated.span style={animatePop} className="cop-pop">
+                <animated.span style={animatePopup} className="cop-pop">
                   Copied!
                 </animated.span>
               </div>
             </animated.div>
             <animated.div style={animBlur} className="nav-div"></animated.div>
-            <animated.div style={animateSide} className="side-menu-users">
+            <animated.div style={animateSideDiv} className="side-menu-users">
               <button
                 style={{ position: "absolute", right: "100%" }}
                 onClick={() => setClick(!click)}
@@ -326,7 +284,7 @@ function Messages(props) {
                 {usersInRooms.map((user) => (
                   <li
                     className="list-element-all-users"
-                    key={Math.floor(Math.random() * 1000000)}
+                    key={Math.floor(Math.random() * 10000)}
                   >
                     <div
                       onClick={() =>
@@ -353,12 +311,12 @@ function Messages(props) {
         <animated.div style={animBlur} className="chat-rooms-cont">
           {userRooms.map((room) => (
             <li
-              key={Math.floor(Math.random() * 1000000)}
+              key={Math.floor(Math.random() * 10000)}
               onClick={() => {
                 joinRoom(room.id);
               }}
             >
-              <a style={{ color: "#02899c" }}>{room.name}</a>
+              <a>{room.name}</a>
             </li>
           ))}
           <div className="chat-rooms-div"></div>
@@ -373,7 +331,6 @@ function Messages(props) {
             chatMessages={chatMessages}
             usersInRooms={usersInRooms}
             user={props.user}
-            // setCanScroll={setCanScrollM}
           ></MessageRendering>
         </animated.ul>
         <animated.form
@@ -396,7 +353,7 @@ function Messages(props) {
             }
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => onEnterPress(e)}
+            onKeyDown={(e) => onEnterPressSend(e)}
           />
           <animated.button
             style={animateMessageDiv}

@@ -48,8 +48,8 @@
   overflow: hidden;
   top: 50%;
   left: 50%;
-  width: 70%;
-  height: 70%;
+  width: 90%;
+  height: 75%;
   min-height: 400px;
   min-width: 500px;
   max-width: 1500px;
@@ -273,9 +273,12 @@
   grid-row-start: 1;
   grid-row-end: span 3;
 }
+.chat-rooms-cont a {
+  color: #02899c;
+}
 .chat-rooms-cont li {
   list-style: none;
-  padding-top: 5px;
+  padding-top: 10px;
   cursor: pointer;
 }
 .message-me {
